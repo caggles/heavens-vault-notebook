@@ -1,0 +1,25 @@
+@font-face {
+    font-family: 'Ancient';
+    src:  url('resources/ancientrunes.ttf') format('truetype')
+}
+
+body {
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+.ancient {
+    font-family: 'Ancient', sans-serif;
+    font-size: 2em;
+}
+
+button {
+    margin: 5px;
+}
+
+button.ancient {
+    width: 1.5em;
+}
+
+div#target {
+    height: 2em;
+}

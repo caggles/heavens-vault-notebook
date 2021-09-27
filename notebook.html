@@ -1,7 +1,10 @@
-<html>
+<!DOCTYPE html>
+
+<html lang="en">
 
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="word.js"></script>
         <script src="notebook.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,58 +16,99 @@
     </head>
     <body>
 
-    <div id="target" class="ancient"></div>
-
-    <div id="keyboard">
-        <button class="ancient">:</button>
-        <button class="ancient">.</button>
-        <button class="ancient">;</button>
-        <button class="ancient">"</button>
-        <button class="ancient">'</button>
-        <button class="ancient">(</button>
-        <button class="ancient">)</button>
-        <button class="ancient">,</button>
-        <button class="ancient">?</button>
-        <button class="ancient">x</button>
-        <button class="ancient">f</button>
-        <button class="ancient">w</button>
-        <button class="ancient">j</button>
-        <button class="ancient">r</button>
-        <button class="ancient">p</button>
-        <button class="ancient">g</button>
-        <button class="ancient">e</button>
-        <button class="ancient">b</button>
-        <button class="ancient">d</button>
-        <button class="ancient">a</button>
-        <button class="ancient">c</button>
-        <button class="ancient">h</button>
-        <button class="ancient">i</button>
-        <button class="ancient">k</button>
-        <button class="ancient">l</button>
-        <button class="ancient">m</button>
-        <button class="ancient">n</button>
-        <button class="ancient">o</button>
-        <button class="ancient">q</button>
-        <button class="ancient">s</button>
-        <button class="ancient">t</button>
-        <button class="ancient">u</button>
-        <button class="ancient">v</button>
-        <button class="ancient">y</button>
-        <button class="ancient">z</button>
-        <button class="ancient">=</button>
-        <button class="ancient">1</button>
-        <button class="ancient">2</button>
-        <button class="ancient">3</button>
-        <button class="ancient">4</button>
-        <button class="ancient">5</button>
-        <button class="ancient">6</button>
-        <button class="ancient">7</button>
-        <button class="ancient">8</button>
-        <button class="ancient">9</button>
-        <button class="ancient">0</button>
+    <div id="nav">
+        <button id="toggleaddword">Add A New Vocab Word</button>
+        <button id="togglevocablist">View Your Vocabulary</button>
+        <button id="save">Save</button>
+        <button id="load">Load</button>
     </div>
-    <button id="clear">Clear</button>
 
+    <div id="addword">
+        <button id="clear">Clear</button>
+        <button id="add">Add Word to Vocabulary</button>
+        <br />
+        <label for="translation">Translation: </label><input type="text" id="translation">
+        <div id="keyboard">
+            <button class="ancient">:</button>
+            <button class="ancient">.</button>
+            <button class="ancient">;</button>
+            <button class="ancient">"</button>
+            <button class="ancient">'</button>
+            <button class="ancient">(</button>
+            <button class="ancient">)</button>
+            <button class="ancient">,</button>
+            <button class="ancient">?</button>
+            <button class="ancient">x</button>
+            <button class="ancient">f</button>
+            <button class="ancient">w</button>
+            <button class="ancient">j</button>
+            <button class="ancient">r</button>
+            <button class="ancient">p</button>
+            <button class="ancient">g</button>
+            <button class="ancient">e</button>
+            <button class="ancient">b</button>
+            <button class="ancient">d</button>
+            <button class="ancient">a</button>
+            <button class="ancient">c</button>
+            <button class="ancient">h</button>
+            <button class="ancient">i</button>
+            <button class="ancient">k</button>
+            <button class="ancient">l</button>
+            <button class="ancient">m</button>
+            <button class="ancient">n</button>
+            <button class="ancient">o</button>
+            <button class="ancient">q</button>
+            <button class="ancient">s</button>
+            <button class="ancient">t</button>
+            <button class="ancient">u</button>
+            <button class="ancient">v</button>
+            <button class="ancient">y</button>
+            <button class="ancient">z</button>
+            <button class="ancient">=</button>
+            <button class="ancient">1</button>
+            <button class="ancient">2</button>
+            <button class="ancient">3</button>
+            <button class="ancient">4</button>
+            <button class="ancient">5</button>
+            <button class="ancient">6</button>
+            <button class="ancient">7</button>
+            <button class="ancient">8</button>
+            <button class="ancient">9</button>
+            <button class="ancient">0</button>
+        </div>
+        <div id="target" class="ancient"></div>
+        <div class="flex-container">
+            <div class="detail-translations flex-child"></div>
+            <div class="contains-words flex-child"></div>
+            <div class="contained-within flex-child"></div>
+        </div>
+    </div>
+
+    <div id="vocablist"></div>
+
+    <div id="vocabdetail" class="flex-container">
+        <div class="ancient detail-name flex-child"></div>
+        <div class="detail-translations flex-child"></div>
+        <div class="contains-words flex-child"></div>
+        <div class="contained-within flex-child"></div>
+    </div>
+
+    <div id="notification"></div>
+
+    <div id="save_modal" class="modal">
+        <div id="save_modal_content" class="modal_content">
+            <span id="save_close" class="close">&times;</span>
+            <textarea id="save_box"></textarea>
+        </div>
+    </div>
+
+    <div id="load_modal" class="modal">
+        <div id="load_modal_content" class="modal_content">
+            <span id="load_close" class="close">&times;</span>
+            <textarea id="load_box"></textarea>
+            <button id="load_modal_button">load</button>
+        </div>
+    </div>
 
     </body>
 </html>

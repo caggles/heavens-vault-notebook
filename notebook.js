@@ -60,6 +60,8 @@ $(document).ready(function(){
         $("div#addword").hide();
         $("div#vocablist").hide();
         $("div#vocabdetail").show();
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
     });
 
     // generates a listener for each translation of an ancient word, which allows the user to delete a translation

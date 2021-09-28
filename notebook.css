@@ -136,6 +136,7 @@ div#target {
     height: 1.3em;
     padding: 0.5em;
     text-align: center;
+    font-size: 3em;
 }
 
 div#notification {

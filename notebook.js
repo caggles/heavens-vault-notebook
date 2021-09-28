@@ -1,8 +1,15 @@
 $(document).ready(function(){
 
     // create the global vocab list and symbol translations
-    let vocab = [];
-    let symbols = [];
+    let vocab = cookieload("vocab");
+    let symbols = cookieload("symbols");
+
+    if (vocab == null) {
+        vocab = [];
+    }
+    if (symbols == null) {
+        symbols = [];
+    }
 
     ///////////////////////////////////////////////////
     //                  LISTENERS                    //
@@ -73,6 +80,7 @@ $(document).ready(function(){
             word.translations.splice(vocab[wordindex].translations.indexOf(translation), 1);
             basictranslations(word);
             detailtranslations(word);
+            cookiesave();
         } else {
             notify('You cannot delete the only translation of an ancient word. Please add a new one before trying to delete this one.')
         }
@@ -108,6 +116,7 @@ $(document).ready(function(){
             $("td.containedby_exact").html("");
             $("td.containedby_close").html("");
             $("div.detail-translations").html("");
+            cookiesave();
         } else {
             notify("Both the ancient word and translation need to have at least one character. Please try again.")
         }
@@ -121,6 +130,7 @@ $(document).ready(function(){
             temp_symbols.push(symbol);
         });
         symbols = temp_symbols;
+        cookiesave();
     });
 
     // listener to open the save box
@@ -137,12 +147,21 @@ $(document).ready(function(){
 
     // listener for the load button in the load box
     $("button#load_modal_button").click(function(){
-        let load_text = JSON.parse($("#load_box").val());
-        vocab = load_text['vocab'];
-        symbols = load_text['symbols'];
-        $("#load_box").val("");
-        $("div.modal").hide();
-        showvocablist();
+        try {
+            let load_text = JSON.parse($("#load_box").val());
+            if (load_text.hasOwnProperty('vocab') && load_text.hasOwnProperty('symbols')) {
+                vocab = load_text['vocab'];
+                symbols = load_text['symbols'];
+                $("#load_box").val("");
+                $("div.modal").hide();
+                showvocablist();
+                cookiesave();
+            } else {
+                notify("Your load file is malformed and can't be loaded.")
+            }
+        } catch (e) {
+            notify("Your load file is malformed and can't be loaded.")
+        }
     });
 
     // listener for the close button for both the save and load boxes
@@ -317,31 +336,15 @@ $(document).ready(function(){
     }
 
     // some old options for saving via cookie, now unused.
-    function cookiesave(vocab){
-        let d = new Date();
-        let exdays = 30;
-        d.setTime(d.getTime() + (exdays*24*60*60*1000));
-        let e = "expires="+ d.toUTCString();
-        console.log(encodeURIComponent(JSON.stringify(vocab)));
-        document.cookie = 'vocab='+ encodeURIComponent(JSON.stringify(vocab)) + ';' + e;
-        console.log(document.cookie);
+    function cookiesave(){
+        localStorage.setItem("vocab", JSON.stringify(vocab));
+        localStorage.setItem("symbols", JSON.stringify(symbols));
     }
 
     // some old options  for loading via cookie, now unused.
-    function cookieload() {
-        let ca = document.cookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) === ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf('vocab') === 0) {
-                let stringy = c.substring(6, c.length);
-                console.log(decodeURIComponent(stringy));
-                return JSON.parse(decodeURIComponent(stringy));
-            }
-            return [];
-        }
+    function cookieload(item) {
+        let stringy_item = localStorage.getItem(item);
+        return JSON.parse(stringy_item);
     }
 
 

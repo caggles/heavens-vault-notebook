@@ -270,9 +270,7 @@ $(document).ready(function(){
         // translation based on subwords
         let childdict = Word.getChildWords(word.name, vocab);
         let childlist = childdict['exact'];
-        if (childlist.length < 1) {
-            $("div.detail-translations").append($(document.createElement('p')).prop({class: 'translations', innerHTML: "none"}));
-        }
+
         childlist.sort(function(a, b){
               if (a.name.length > b.name.length) {return -1;}
               if (a.name.length < b.name.length) {return 1;}
@@ -287,6 +285,10 @@ $(document).ready(function(){
         // translation based on each symbol
         let symbol_trans = translatesymbol(word.name);
         $("div.detail-translations").append($(document.createElement('p')).prop({class: 'translations', innerHTML: symbol_trans}));
+
+        if (childlist.length < 1 && symbol_trans.length < 1) {
+            $("div.detail-translations").append($(document.createElement('p')).prop({class: 'translations', innerHTML: ""}));
+        }
     }
 
     function translateword(childlist, word) {

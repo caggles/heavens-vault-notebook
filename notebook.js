@@ -337,8 +337,13 @@ $(document).ready(function(){
 
     // some old options for saving via cookie, now unused.
     function cookiesave(){
-        localStorage.setItem("vocab", JSON.stringify(vocab));
-        localStorage.setItem("symbols", JSON.stringify(symbols));
+        try {
+            localStorage.setItem("vocab", JSON.stringify(vocab));
+            localStorage.setItem("symbols", JSON.stringify(symbols));
+        } catch (e) {
+            notify("There was an autosave error! You should save manually. <br />" + e)
+        }
+
     }
 
     // some old options  for loading via cookie, now unused.

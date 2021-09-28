@@ -17,17 +17,30 @@
     <body>
 
     <div id="nav">
-        <button id="toggleaddword">Add A New Vocab Word</button>
-        <button id="togglevocablist">View Your Vocabulary</button>
-        <button id="save">Save</button>
-        <button id="load">Load</button>
+        <div id="tabs">
+            <button id="toggleaddword">Add A New Vocab Word</button>
+            <button id="togglevocablist">View Your Vocabulary</button>
+            <button id="togglesymbols">Edit Symbol Translations</button>
+        </div>
+        <div id="settings">
+            <label for="instructionsbool" class="instructionsbool">Display instructions? </label><input type="checkbox" id="instructionsbool" class="instructionsbool">
+            <button id="save">Save</button>
+            <button id="load">Load</button>
+        </div>
+        <div class="instructions">
+            <p>Use the buttons on the left to navigate between pages. Do not use the back button on your browser.</p>
+            <p>
+                Use the save and load buttons above to save your vocabulary notebook between sessions.
+                <b>There is no autosave - if you leave this page without saving, you will lose your changes.</b> Save often to avoid this problem.
+                Further instructions on saving/loading can be found by clicking the buttons.
+            </p>
+        </div>
     </div>
 
     <div id="addword">
-        <button id="clear">Clear</button>
-        <button id="add">Add Word to Vocabulary</button>
-        <br />
         <label for="translation">Translation: </label><input type="text" id="translation">
+        <button id="add">Add Word to Vocabulary</button>
+        <button id="clear">Clear</button>
         <div id="keyboard">
             <button class="ancient">:</button>
             <button class="ancient">.</button>
@@ -77,20 +90,143 @@
             <button class="ancient">0</button>
         </div>
         <div id="target" class="ancient"></div>
-        <div class="flex-container">
+        <div class="instructions">
+            <p>
+                Click on the ancient symbols keyboard above to create words. As you add more symbols, it will check your existing vocabulary and show you all words that it believes are related.
+                Below, you will see possible translations of the new word which have been formed by stringing together your existing translations for the words and symbols that make up this word.
+                You can mouse over these "subwords" to see the ancient verion of each one.
+            </p>
+            <p>
+                Once you have typed out the word, add your guess for a translation in the box, and click "Add Word to Vocabulary."
+                The word will be added to your vocab list for you to view, and to be used later as an aid in other translations.
+                You may add multiple translations of the same ancient word by adding it multiple times to your vocabulary, each with a different translation.
+            </p>
+            <p>
+                If you make a mistake while entering your ancient word, click "Clear" to start again.
+            </p>
+        </div>
+        <div class="container">
             <div class="detail-translations flex-child"></div>
-            <div class="contains-words flex-child"></div>
-            <div class="contained-within flex-child"></div>
+            <table>
+                <tr>
+                    <td class="contains_exact wordlist"></td>
+                    <td class="containedby_exact wordlist"></td>
+                </tr>
+                <tr>
+                    <td class="contains_close wordlist"></td>
+                    <td class="containedby_close wordlist"></td>
+                </tr>
+            </table>
         </div>
     </div>
 
-    <div id="vocablist"></div>
+    <div id="vocablist">
+        <div class="instructions">
+            Below, you will see your full vocabulary (if you have one)!
+            Click on any ancient word in this list to view more detailed information on your translation, as well as similar words in the vocabulary list.
+        </div>
+    </div>
 
-    <div id="vocabdetail" class="flex-container">
-        <div class="ancient detail-name flex-child"></div>
-        <div class="detail-translations flex-child"></div>
-        <div class="contains-words flex-child"></div>
-        <div class="contained-within flex-child"></div>
+    <div id="vocabdetail">
+        <div class="instructions">
+            <p>This page displays information about your translation of a particular ancient word.</p>
+            <p>
+                In the "Manual Translations" section, you will see your own translations for the word.
+                You can have multiple translations for a single word. There are often multiple correct translations for the same word,
+                and this can also be used to record multiple unrelated guesses at a translation while you decide which one is correct.
+                You can delete any one of your translations by clicking the "delete" button next to it.
+                Note that you cannot delete a translation if it is the only one you have for a word. You must add at least a second translation to delete one of them.
+                You can add a second translation by returning to the "Add A New Vocab Word" screen and adding the same ancient word again, with a new translation.
+            </p>
+            <p>
+                Below the translations, you will see lists of related words. Clicking on any of the ancient words will take you to the detailed translation information for that word.
+            </p>
+        </div>
+        <div class="container">
+            <div class="ancient detail-name flex-child"></div>
+            <div class="detail-translations flex-child"></div>
+        </div>
+        <table>
+            <tr>
+                <td class="contains_exact wordlist"></td>
+                <td class="containedby_exact wordlist"></td>
+            </tr>
+            <tr>
+                <td class="contains_close wordlist"></td>
+                <td class="containedby_close wordlist"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="symbols">
+        <div class="instructions">
+            <p>
+                Here, you can enter your guesses for the meanings of each individual symbol.
+                As you record these, they will show up as part of the symbolic translations on the other pages, and when you add a new word to your vocabulary.
+            </p>
+            <p>
+                To update them, simply type your translation into the box next to the symbol, and then click "Save Symbol Translations." Note that this is NOT the same as saving your vocabulary notebook as a whole.
+            </p>
+        </div>
+        <div class="flex-container">
+            <div class="flex-child symbol-flex">
+                <label class="symbol_label" for="colon"><span class="ancient">:</span></label><input type="text" id="colon" class="symbol_entry"><br />
+                <label class="symbol_label" for="period"><span class="ancient">.</span></label><input type="text" id="period" class="symbol_entry"><br />
+                <label class="symbol_label" for="semicolon"><span class="ancient">;</span></label><input type="text" id="semicolon" class="symbol_entry"><br />
+                <label class="symbol_label" for='doublequote'><span class="ancient">"</span></label><input type="text" id='doublequote' class="symbol_entry"><br />
+                <label class="symbol_label" for="singlequote"><span class="ancient">'</span></label><input type="text" id="singlequote" class="symbol_entry"><br />
+                <label class="symbol_label" for="openbracket"><span class="ancient">(</span></label><input type="text" id="openbracket" class="symbol_entry"><br />
+                <label class="symbol_label" for="closebracket"><span class="ancient">)</span></label><input type="text" id="closebracket" class="symbol_entry"><br />
+                <label class="symbol_label" for="comma"><span class="ancient">,</span></label><input type="text" id="comma" class="symbol_entry"><br />
+                <label class="symbol_label" for="questionmark"><span class="ancient">?</span></label><input type="text" id="questionmark" class="symbol_entry"><br />
+            </div>
+            <div class="flex-child symbol-flex">
+                <label class="symbol_label" for="x"><span class="ancient">x</span></label><input type="text" id="x" class="symbol_entry"><br />
+                <label class="symbol_label" for="f"><span class="ancient">f</span></label><input type="text" id="f" class="symbol_entry"><br />
+                <label class="symbol_label" for="w"><span class="ancient">w</span></label><input type="text" id="w" class="symbol_entry"><br />
+                <label class="symbol_label" for="j"><span class="ancient">j</span></label><input type="text" id="j" class="symbol_entry"><br />
+                <label class="symbol_label" for="r"><span class="ancient">r</span></label><input type="text" id="r" class="symbol_entry"><br />
+                <label class="symbol_label" for="p"><span class="ancient">p</span></label><input type="text" id="p" class="symbol_entry"><br />
+                <label class="symbol_label" for="g"><span class="ancient">g</span></label><input type="text" id="g" class="symbol_entry"><br />
+                <label class="symbol_label" for="e"><span class="ancient">e</span></label><input type="text" id="e" class="symbol_entry"><br />
+                <label class="symbol_label" for="b"><span class="ancient">b</span></label><input type="text" id="b" class="symbol_entry"><br />
+            </div>
+            <div class="flex-child symbol-flex">
+                <label class="symbol_label" for="d"><span class="ancient">d</span></label><input type="text" id="d" class="symbol_entry"><br />
+                <label class="symbol_label" for="a"><span class="ancient">a</span></label><input type="text" id="a" class="symbol_entry"><br />
+                <label class="symbol_label" for="c"><span class="ancient">c</span></label><input type="text" id="c" class="symbol_entry"><br />
+                <label class="symbol_label" for="h"><span class="ancient">h</span></label><input type="text" id="h" class="symbol_entry"><br />
+                <label class="symbol_label" for="i"><span class="ancient">i</span></label><input type="text" id="i" class="symbol_entry"><br />
+                <label class="symbol_label" for="k"><span class="ancient">k</span></label><input type="text" id="k" class="symbol_entry"><br />
+                <label class="symbol_label" for="l"><span class="ancient">l</span></label><input type="text" id="l" class="symbol_entry"><br />
+                <label class="symbol_label" for="m"><span class="ancient">m</span></label><input type="text" id="m" class="symbol_entry"><br />
+                <label class="symbol_label" for="n"><span class="ancient">n</span></label><input type="text" id="n" class="symbol_entry"><br />
+            </div>
+            <div class="flex-child symbol-flex">
+                <label class="symbol_label" for="o"><span class="ancient">o</span></label><input type="text" id="o" class="symbol_entry"><br />
+                <label class="symbol_label" for="q"><span class="ancient">q</span></label><input type="text" id="q" class="symbol_entry"><br />
+                <label class="symbol_label" for="s"><span class="ancient">s</span></label><input type="text" id="s" class="symbol_entry"><br />
+                <label class="symbol_label" for="t"><span class="ancient">t</span></label><input type="text" id="t" class="symbol_entry"><br />
+                <label class="symbol_label" for="u"><span class="ancient">u</span></label><input type="text" id="u" class="symbol_entry"><br />
+                <label class="symbol_label" for="v"><span class="ancient">v</span></label><input type="text" id="v" class="symbol_entry"><br />
+                <label class="symbol_label" for="y"><span class="ancient">y</span></label><input type="text" id="y" class="symbol_entry"><br />
+                <label class="symbol_label" for="z"><span class="ancient">z</span></label><input type="text" id="z" class="symbol_entry"><br />
+                <label class="symbol_label" for="equals"><span class="ancient">=</span></label><input type="text" id="equals" class="symbol_entry"><br />
+            </div>
+            <div class="flex-child symbol-flex">
+                <label class="symbol_label" for="one"><span class="ancient">1</span></label><input type="text" id="one" class="symbol_entry"><br />
+                <label class="symbol_label" for="two"><span class="ancient">2</span></label><input type="text" id="two" class="symbol_entry"><br />
+                <label class="symbol_label" for="three"><span class="ancient">3</span></label><input type="text" id="three" class="symbol_entry"><br />
+                <label class="symbol_label" for="four"><span class="ancient">4</span></label><input type="text" id="four" class="symbol_entry"><br />
+                <label class="symbol_label" for="five"><span class="ancient">5</span></label><input type="text" id="five" class="symbol_entry"><br />
+                <label class="symbol_label" for="six"><span class="ancient">6</span></label><input type="text" id="six" class="symbol_entry"><br />
+                <label class="symbol_label" for="seven"><span class="ancient">7</span></label><input type="text" id="seven" class="symbol_entry"><br />
+                <label class="symbol_label" for="eight"><span class="ancient">8</span></label><input type="text" id="eight" class="symbol_entry"><br />
+                <label class="symbol_label" for="nine"><span class="ancient">9</span></label><input type="text" id="nine" class="symbol_entry"><br />
+                <label class="symbol_label" for="zero"><span class="ancient">0</span></label><input type="text" id="zero" class="symbol_entry"><br />
+            </div>
+        </div>
+        <button id="symbol-save">Save Symbol Translations</button>
     </div>
 
     <div id="notification"></div>
@@ -98,6 +234,7 @@
     <div id="save_modal" class="modal">
         <div id="save_modal_content" class="modal_content">
             <span id="save_close" class="close">&times;</span>
+            <p>Save your vocabulary list. Copy everything in the box below and paste it into a file. You will need to copy-paste it back into the loading box when you return to this page later.</p>
             <textarea id="save_box"></textarea>
         </div>
     </div>
@@ -105,6 +242,7 @@
     <div id="load_modal" class="modal">
         <div id="load_modal_content" class="modal_content">
             <span id="load_close" class="close">&times;</span>
+            <p>If you have saved your vocabulary previously, paste it here. Warning: this will overwrite any vocabulary currently in your notebook.</p>
             <textarea id="load_box"></textarea>
             <button id="load_modal_button">load</button>
         </div>

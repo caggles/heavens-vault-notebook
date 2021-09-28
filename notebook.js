@@ -1,7 +1,8 @@
 $(document).ready(function(){
 
-    // create the global vocab list
+    // create the global vocab list and symbol translations
     let vocab = [];
+    let symbols = [];
 
     ///////////////////////////////////////////////////
     //                  LISTENERS                    //
@@ -17,28 +18,44 @@ $(document).ready(function(){
         showvocablist();
     });
 
+    // listener for the button to show the symbols list
+    $("button#togglesymbols").click(function(){
+        showsymbols();
+    });
+
+    // listener for the checkbox to show instructions
+    $("input#instructionsbool").click(function(){
+        $(".instructions").toggle(this.checked);
+    });
+
     // listener for clicking one of the ancient keys on the keyboard
     $("button.ancient").click(function(){
         let letter = $(this).text();
         $("#target").text($("#target").text() + letter);
-        contains($("#target").text());
-        containedby($("#target").text());
+        wordlist($("#target").text(), "child", "exact", "td.contains_exact", "Contains the exact words...");
+        wordlist($("#target").text(), "child", "close", "td.contains_close", "Contains the similar words...");
+        wordlist($("#target").text(), "parent", "exact", "td.containedby_exact", "Is contained within the exact words...");
+        wordlist($("#target").text(), "parent", "close", "td.containedby_close", "Is contained within the similar words...");
         let word = vocab.find((o) => { return o['name'] === $("#target").text() });
         if (word !== undefined) {
-            $("div.detail-translations").html('<b>This word already exists in your vocabulary with the following translations: </b><br /><br />');
+            $("div.detail-translations").html('<p><b>This word already exists in your vocabulary with the following translations: </b></p>');
             for (let x in word.translations) {
                 $("div.detail-translations").append($(document.createElement('li')).prop({innerHTML: word.translations[x]}));
             }
         } else {
-            $("div.detail-translations").html("<b>This is a new word not yet in your vocabulary.</b>");
+            $("div.detail-translations").html("<p><b>This is a new word not yet in your vocabulary.</b></p>");
         }
+        detailtranslations({name: $("#target").text()});
     });
 
     // generates a listener for each ancient word in the vocab list, to allow the user to open more detailed information about said word
-    $('div#vocablist').on('click', 'button', function(){
+    $('div#vocablist, td.containedby_close, td.containedby_exact, td.contains_close, td.contains_exact').on('click', 'button', function(){
         let word = vocab.find((o) => { return o['name'] === this.textContent });
-        contains(word.name);
-        containedby(word.name);
+        wordlist(word.name, "child", "exact", "td.contains_exact", "Contains the exact words...");
+        wordlist(word.name, "child", "close", "td.contains_close", "Contains the similar words...");
+        wordlist(word.name, "parent", "exact", "td.containedby_exact", "Is contained within the exact words...");
+        wordlist(word.name, "parent", "close", "td.containedby_close", "Is contained within the similar words...");
+        basictranslations(word);
         detailtranslations(word);
         $("div#addword").hide();
         $("div#vocablist").hide();
@@ -49,9 +66,11 @@ $(document).ready(function(){
     $('div.detail-translations').on('click', 'button', function(){
         let wordindex = vocab.findIndex((o) => { return o['name'] === $("div.detail-name").html() });
         let translation = this.dataset.translation;
-        if (vocab[wordindex].translations.length > 1) {
-            vocab[wordindex].translations.splice(vocab[wordindex].translations.indexOf(translation), 1);
-            detailtranslations(vocab[wordindex]);
+        let word = vocab[wordindex];
+        if (word.translations.length > 1) {
+            word.translations.splice(vocab[wordindex].translations.indexOf(translation), 1);
+            basictranslations(word);
+            detailtranslations(word);
         } else {
             notify('You cannot delete the only translation of an ancient word. Please add a new one before trying to delete this one.')
         }
@@ -61,8 +80,10 @@ $(document).ready(function(){
     $("button#clear").click(function(){
         $("#target").text("");
         $("#translation").val("");
-        $("div.contains-words").html("");
-        $("div.contained-within").html("");
+        $("td.contains_exact").html("");
+        $("td.contains_close").html("");
+        $("td.containedby_exact").html("");
+        $("td.containedby_close").html("");
         $("div.detail-translations").html("");
     });
 
@@ -80,19 +101,31 @@ $(document).ready(function(){
             }
             $("#target").text("");
             $("#translation").val("");
-            $("div.contains-words").html("");
-            $("div.contained-within").html("");
+            $("td.contains_exact").html("");
+            $("td.contains_close").html("");
+            $("td.containedby_exact").html("");
+            $("td.containedby_close").html("");
             $("div.detail-translations").html("");
         } else {
             notify("Both the ancient word and translation need to have at least one character. Please try again.")
         }
+    });
 
+    // listener to save the symbol translations
+    $("button#symbol-save").click(function() {
+        let temp_symbols = [];
+        $(".symbol_entry").each(function() {
+            let symbol = {"symbol": $('label[for="' + $(this).attr('id') + '"]').text(), "id": $(this).attr('id'), "translation": $(this).val()};
+            temp_symbols.push(symbol);
+        });
+        symbols = temp_symbols;
     });
 
     // listener to open the save box
     $("button#save").click(function(){
         $("div#save_modal").show();
-        $("#save_box").val(JSON.stringify(vocab));
+        let save_text = {'vocab': vocab, 'symbols': symbols};
+        $("#save_box").val(JSON.stringify(save_text));
     });
 
     // listener to open the load box
@@ -102,7 +135,10 @@ $(document).ready(function(){
 
     // listener for the load button in the load box
     $("button#load_modal_button").click(function(){
-        vocab = JSON.parse($("#load_box").val());
+        let load_text = JSON.parse($("#load_box").val());
+        vocab = load_text['vocab'];
+        symbols = load_text['symbols'];
+        $("#load_box").val("");
         $("div.modal").hide();
         showvocablist();
     });
@@ -122,9 +158,12 @@ $(document).ready(function(){
         $("div#addword").show();
         $("div#vocablist").hide();
         $("div#vocabdetail").hide();
+        $("div#symbols").hide();
         $("#target").text("");
-        $("div.contains-words").html("");
-        $("div.contained-within").html("");
+        $("td.contains_exact").html("");
+        $("td.contains_close").html("");
+        $("td.containedby_exact").html("");
+        $("td.containedby_close").html("");
         $("div.detail-translations").html("");
     }
 
@@ -133,15 +172,35 @@ $(document).ready(function(){
         $("div#addword").hide();
         $("div#vocabdetail").hide();
         $("div#vocablist").show();
-        $("div.contains-words").html("");
-        $("div.contained-within").html("");
+        $("div#symbols").hide();
+        $("td.contains_exact").html("");
+        $("td.contains_close").html("");
+        $("td.containedby_exact").html("");
+        $("td.containedby_close").html("");
         $("div.detail-translations").html("");
         vocab.sort(function(a, b){
               if (a.translations[0] < b.translations[0]) {return -1;}
               if (a.translations[0] > b.translations[0]) {return 1;}
               return 0;
         });
-        generateList(vocab, "#vocablist");
+        $('#vocablist table').remove();
+        generateList(vocab, "#vocablist", true);
+    }
+
+    // display the symbols div and hide the others
+    function showsymbols() {
+        $("div#addword").hide();
+        $("div#vocablist").hide();
+        $("div#vocabdetail").hide();
+        $("div#symbols").show();
+        $("td.contains_exact").html("");
+        $("td.contains_close").html("");
+        $("td.containedby_exact").html("");
+        $("td.containedby_close").html("");
+        $("div.detail-translations").html("");
+        for (let x in symbols) {
+            $("input#" + symbols[x]['id']).val(symbols[x]['translation'])
+        }
     }
 
     // pop something up in the notification box
@@ -150,49 +209,46 @@ $(document).ready(function(){
     }
 
     // generate the vocabulary list
-    function generateList(objects, target) {
-        $(target + ' *').remove();
+    function generateList(objects, target, title) {
         if (objects.length > 0) {
             $(target).append($(document.createElement('table')));
+            $(target + ' table').append($(document.createElement('tr')).prop({class: 'vocab-titles'}));
+            if (title) {
+                $(target + ' table:last-child tr:last-child').append($(document.createElement('td')).prop({class: 'table-title', innerHTML: 'Ancient Word'}));
+                $(target + ' table:last-child tr:last-child').append($(document.createElement('td')).prop({class: 'table-title', innerHTML: 'Translations'}));
+            }
             for (let x in objects) {
-                $(target + ' table').append($(document.createElement('tr')).prop({class: 'vocab-entry'}));
-                $(target + ' table tr:last-child').append($(document.createElement('td')).prop({class: 'table-name'}));
-                $(target + ' table tr:last-child').append($(document.createElement('td')).prop({class: 'table-translations', innerHTML: objects[x].translations.join(', ')}));
-                $(target + ' table tr:last-child td.table-name').append($(document.createElement('button')).prop({class: 'detail', innerHTML: objects[x].name}));
+                $(target + ' table:last-child').append($(document.createElement('tr')).prop({class: 'vocab-entry'}));
+                $(target + ' table:last-child tr:last-child').append($(document.createElement('td')).prop({class: 'table-name'}));
+                $(target + ' table:last-child tr:last-child').append($(document.createElement('td')).prop({class: 'table-translations', innerHTML: objects[x].translations.join(', ')}));
+                $(target + ' table:last-child tr:last-child td.table-name').append($(document.createElement('button')).prop({class: 'detail', innerHTML: objects[x].name}));
             }
         }
     }
 
-    // print the 'contains words' list in the relevant divs.
-    function contains(word_name) {
-        let childdict = Word.getChildWords(word_name, vocab);
-         $("div.contains-words").html("");
-        $("div.contains-words").append($(document.createElement('h3')).prop({innerHTML: 'Contains the exact words....'}));
-        for (let x in childdict['exact']) {
-            $("div.contains-words").append($(document.createElement('p')).prop({innerHTML: '<span class="ancient">' + childdict['exact'][x].name + '</span> -- ' + childdict['exact'][x].translations.join(', ')}));
+    // print a word list with buttons in the relevant div/cell
+    function wordlist(word_name, type, specificity, target, title) {
+        let dict = {'exact': [], 'close': []};
+        let nonehtml = '<table><tr class="vocab-entry"><td class="table-translations">none</td></tr>';
+
+        if (type === "parent") {
+            dict = Word.getParentWords(word_name, vocab);
+        } else if (type === "child") {
+            dict = Word.getChildWords(word_name, vocab);
         }
-        $("div.contains-words").append($(document.createElement('h3')).prop({innerHTML: 'Contains the similar words....'}));
-        for (let x in childdict['close']) {
-            $("div.contains-words").append($(document.createElement('p')).prop({innerHTML: '<span class="ancient">' + childdict['close'][x].name + '</span> -- ' + childdict['close'][x].translations.join(', ')}));
+
+        $(target).html("");
+        $(target).append($(document.createElement('p')).prop({innerHTML: '<b>' + title + '</b>'}));
+
+        if (dict[specificity].length < 1) {
+            $(target).append($(document.createElement('p')).prop({class: "relatedwords", innerHTML: nonehtml}));
+        } else {
+            generateList(dict[specificity], target, false);
         }
     }
 
-    // print the 'contained within' list in the relevant divs.
-    function containedby(word_name) {
-        let parentdict = Word.getParentWords(word_name, vocab);
-        $("div.contained-within").html("");
-        $("div.contained-within").append($(document.createElement('h3')).prop({innerHTML: 'Is contained within the exact words...'}));
-        for (let x in parentdict['exact']) {
-            $("div.contained-within").append($(document.createElement('p')).prop({innerHTML: '<span class="ancient">' + parentdict['exact'][x].name + '</span> -- ' + parentdict['exact'][x].translations.join(', ')}));
-        }
-        $("div.contained-within").append($(document.createElement('h3')).prop({innerHTML: 'Is contained within the similar words...'}));
-        for (let x in parentdict['close']) {
-            $("div.contained-within").append($(document.createElement('p')).prop({innerHTML: '<span class="ancient">' + parentdict['close'][x].name + '</span> -- ' + parentdict['close'][x].translations.join(', ')}));
-        }
-    }
-
-    // print the detailed version of the translations in the relevant div.
-    function detailtranslations(word) {
+    // basic/manual translations plus print the word real big.
+    function basictranslations(word) {
         $("div.detail-translations").html('<h3>Translations</h3>');
         $("div.detail-name").html(word.name);
         for (let x in word.translations) {
@@ -202,6 +258,58 @@ $(document).ready(function(){
             button.attr("data-translation", word.translations[x]);
             $("div.detail-translations p:last-child").append(button);
         }
+    }
+
+    // print the detailed version of the translations in the relevant div.
+    function detailtranslations(word) {
+
+        $("div.detail-translations").append($(document.createElement('h3')).prop({innerHTML: 'Symbol Translations'}));
+
+        // translation based on subwords
+        let childdict = Word.getChildWords(word.name, vocab);
+        let childlist = childdict['exact'];
+        if (childlist.length < 1) {
+            $("div.detail-translations").append($(document.createElement('p')).prop({class: 'translations', innerHTML: "none"}));
+        }
+        childlist.sort(function(a, b){
+              if (a.name.length > b.name.length) {return -1;}
+              if (a.name.length < b.name.length) {return 1;}
+              return 0;
+        });
+        for (let y in childlist) {
+            let sublist = childlist.slice(y);
+            let subwordtranslation = translateword(sublist, word.name);
+            $("div.detail-translations").append($(document.createElement('p')).prop({class: 'translations', innerHTML: subwordtranslation}));
+        }
+
+        // translation based on each symbol
+        let symbol_trans = translatesymbol(word.name);
+        $("div.detail-translations").append($(document.createElement('p')).prop({class: 'translations', innerHTML: symbol_trans}));
+    }
+
+    function translateword(childlist, word) {
+        for (let y in childlist) {
+            let index = word.indexOf(childlist[y].name);
+            if (index >= 0) {
+                let pre = word.substring(0, index);
+                let post = word.substring(index + childlist[y].name.length, word.length);
+                return translateword(childlist, pre) + "<div class='translation-word'><b>" + childlist[y].translations + "</b><span class='translation-tooltiptext ancient'>" + childlist[y].name + "</span></div> " + translateword(childlist, post);
+            }
+        }
+        return translatesymbol(word);
+    }
+
+    function translatesymbol(word) {
+        let symbol_trans = "";
+        for (let letter in word) {
+            let translation = symbols.find((o) => { return o['symbol'] === word[letter] });
+            if (translation === undefined || translation['translation'] === "") {
+                symbol_trans += "<div class='translation-word'>?<span class='translation-tooltiptext ancient'>" + translation['symbol'] + "</span></div> ";
+            } else {
+                symbol_trans += "<div class='translation-word'>" + translation['translation'] + "<span class='translation-tooltiptext ancient'>" + translation['symbol'] + "</span></div> ";
+            }
+        }
+        return symbol_trans;
     }
 
     // some old options for saving via cookie, now unused.

@@ -7,16 +7,22 @@ body {
     font-family: "Roboto", Arial, Helvetica, sans-serif;
 }
 
-.flex-container {
-    display: flex;
-    border-radius: 5px;
+.container {
+    display: block;
     padding: 5px 5px 10px 5px;
+}
+
+.flex-container {
+    display: inline-flex;
+    padding: 5px 5px 10px 5px;
+    flex-flow: row wrap;
 }
 
 .flex-child {
     flex: 1;
     padding: 15px;
-    margin-right: 10px;
+    margin: 0 auto;
+    vertical-align: top;
 }
 
 .ancient, .detail {
@@ -24,16 +30,102 @@ body {
     font-size: 2em;
 }
 
+.detail-name {
+    font-size: 4em;
+}
+
+div.translation-word {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #888;
+    padding: 3px;
+}
+
+div.translation-word .translation-tooltiptext {
+    visibility: hidden;
+    background-color: rgba(240, 240, 240, 1);
+    border: 1px solid #444;
+    padding: 3px;
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    bottom: 110%;
+    transform: translate(-50%, 0);
+    font-size: 1.4em;
+}
+
+div.translation-word:hover .translation-tooltiptext {
+  visibility: visible;
+}
+
 button {
     margin: 5px;
 }
 
+div#nav {
+    display: block;
+    margin: 0 1% 0 1%;
+    border: 1px solid #888;
+    padding: 0.5em;
+}
+
+div#tabs {
+    display: inline-flex;
+    justify-content: flex-start;
+    width: 40%;
+}
+
+div#settings {
+    display: inline-flex;
+    justify-content: flex-end;
+    float: right;
+    width: 40%;
+}
+
+.instructionsbool {
+    padding-top: 0.3em;
+}
+
+input[type="checkbox"]
+{
+    margin-top: 0.6em;
+    vertical-align: middle;
+}
+
+.instructions {
+    display:none;
+    padding: 1%;
+    background-color: #DDD;
+    font-size: 0.8em;
+}
+
 div#addword {
     display: block;
+    margin: 1%;
+    padding: 1em;
+    border: 1px solid #888;
+}
+
+div#symbols {
+    display: none;
+    margin: 1%;
+    padding: 1em;
+    border: 1px solid #888;
+}
+
+div#keyboard {
+    display: block;
+    padding: 1% 0 1% 0;
 }
 
 div#vocablist, div#vocabdetail {
     display: none;
+    margin: 1%;
+    border: 1px solid #888;
+}
+
+div#vocabdetail {
+    padding: 1em;
 }
 
 button.ancient {
@@ -41,17 +133,28 @@ button.ancient {
 }
 
 div#target {
-    height: 2em;
+    height: 1.3em;
+    padding: 0.5em;
+    text-align: center;
 }
 
 div#notification {
-
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 10%;
+    top: 0;
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
 }
 
 div.modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     left: 0;
     top: 0;
     width: 100%;
@@ -87,4 +190,76 @@ textarea {
     width: 90%;
     height: 15em;
     overflow: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td {
+    padding: 15px;
+    vertical-align: top;
+}
+
+td.table-title {
+    background-color: rgba(75, 75, 75, 1);
+    color: white;
+    font-weight: bold;
+}
+
+tr.vocab-entry:nth-child(even) {
+    background: rgba(230, 230, 230, 1);
+}
+
+tr.vocab-entry:nth-child(odd) {
+    background: rgba(200, 200, 200, 1);
+}
+
+button.detail {
+    background-color: rgba(0,0,0,0.1);
+    border-top: #FFF 1px solid;
+    border-right: #FFF 1px solid;
+    border-bottom: #777 2px solid;
+    border-left: #777 2px solid;
+}
+
+button.detail:hover, button.detail:focus {
+    background-color: rgba(0,0,0,0.2);
+    border-top: #FFF 1px solid;
+    border-right: #FFF 1px solid;
+    border-bottom: #777 2px solid;
+    border-left: #777 2px solid;
+}
+
+button.detail:active {
+    background-color: rgba(0,0,0,0.8);
+    color: #DDD;
+    border: 0;
+}
+
+p.translations, p.relatedwords {
+    margin-left: 0.5%
+}
+
+button.translation_delete {
+    font-size: 0.7em;
+    margin-left: 0.5%;
+    background-color: #FFF;
+    border: 0;
+    color: #AAA;
+}
+
+button.translation_delete:hover, button.translation_delete:focus {
+    color: #444;
+}
+
+.symbol_label {
+    display: inline-block;
+    width: 2.5em;
+    height: 2.5em;
+}
+
+#load_modal {
+    display:block;
 }

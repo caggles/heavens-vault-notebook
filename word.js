@@ -11,14 +11,14 @@ class Word {
 
         for (let x in vocab) {
 
+            let subword = vocab[x].name.slice(1, vocab[x].name.length-1);
+
             //get the exact match child words
             if (word.includes(vocab[x].name) && vocab[x].name !== word) {
                 exactchildlist.push(vocab[x])
-            }
 
             //get child words that look similar but aren't exact (aka only first/last letter are different)
-            let subword = vocab[x].name.slice(1, vocab[x].name.length-1);
-            if (word.includes(subword) && subword !== "" && subword !== "." && subword !== ":" && vocab[x].name !== word) {
+            } else if (word.includes(subword) && subword !== "" && subword !== "." && subword !== ":" && vocab[x].name !== word) {
                 closechildlist.push(vocab[x])
             }
         }
@@ -43,10 +43,9 @@ class Word {
             //get the exact match parent words
             if (vocab[x].name.includes(word) && vocab[x].name !== word) {
                 exactparentlist.push(vocab[x])
-            }
 
             //get parent words that look similar but aren't exact (aka only first/last letter are different)
-            if (vocab[x].name.includes(subword) && subword !== "" && subword !== "." && subword !== ":" && vocab[x].name !== word) {
+            } else if (vocab[x].name.includes(subword) && subword !== "" && subword !== "." && subword !== ":" && vocab[x].name !== word) {
                 closeparentlist.push(vocab[x])
             }
         }

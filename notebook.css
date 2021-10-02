@@ -209,6 +209,12 @@ td.table-title {
     font-weight: bold;
 }
 
+td.table-info {
+    background-color: rgba(75, 75, 75, 1);
+    color: white;
+    font-size: 0.8em;
+}
+
 tr.vocab-entry:nth-child(even) {
     background: rgba(230, 230, 230, 1);
 }
@@ -243,9 +249,9 @@ p.translations, p.relatedwords {
     margin-left: 0.5%
 }
 
-button.translation_delete {
+button.translation_delete, button.word_delete {
     font-size: 0.7em;
-    margin-left: 0.5%;
+    margin-left: 1.2%;
     background-color: #FFF;
     border: 0;
     color: #AAA;

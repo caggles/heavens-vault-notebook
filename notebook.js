@@ -71,6 +71,19 @@ $(document).ready(function(){
         document.documentElement.scrollTop = 0;
     });
 
+    // generates a listener for the button to delete a word from your vocabulary
+    $('div.word-delete').on('click', 'button', function(){
+        let confirmed = confirm("This will delete this ancient word from your vocabulary, including all translations. Are you sure?");
+        if (confirmed) {
+            let wordindex = vocab.findIndex((o) => { return o['name'] === $("div.detail-name").html() });
+            vocab.splice(wordindex, 1);
+            showvocablist();
+            cookiesave();
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+    });
+
     // generates a listener for each translation of an ancient word, which allows the user to delete a translation
     $('div.detail-translations').on('click', 'button', function(){
         let wordindex = vocab.findIndex((o) => { return o['name'] === $("div.detail-name").html() });
@@ -233,8 +246,12 @@ $(document).ready(function(){
     function generateList(objects, target, title) {
         if (objects.length > 0) {
             $(target).append($(document.createElement('table')));
-            $(target + ' table').append($(document.createElement('tr')).prop({class: 'vocab-titles'}));
+
             if (title) {
+                $(target + ' table').append($(document.createElement('tr')).prop({class: 'vocab-titles'}));
+                $(target + ' table:last-child tr:last-child').append($(document.createElement('td')).prop({class: 'table-info', innerHTML: 'Vocabulary Size: ' + vocab.length + ' words.'}));
+                $(target + ' table:last-child tr:last-child').append($(document.createElement('td')).prop({class: 'table-info', innerHTML: ''}));
+                $(target + ' table:last-child').append($(document.createElement('tr')).prop({class: 'vocab-titles'}));
                 $(target + ' table:last-child tr:last-child').append($(document.createElement('td')).prop({class: 'table-title', innerHTML: 'Ancient Word'}));
                 $(target + ' table:last-child tr:last-child').append($(document.createElement('td')).prop({class: 'table-title', innerHTML: 'Translations'}));
             }
@@ -270,8 +287,11 @@ $(document).ready(function(){
 
     // basic/manual translations plus print the word real big.
     function basictranslations(word) {
-        $("div.detail-translations").html('<h3>Translations</h3>');
         $("div.detail-name").html(word.name);
+        let button = $(document.createElement('button'));
+        button.prop({class: 'word_delete', innerHTML: "delete"});
+        $("div.word-delete").html(button);
+        $("div.detail-translations").html('<h3>Translations</h3>');
         for (let x in word.translations) {
             $("div.detail-translations").append($(document.createElement('p')).prop({class: 'translations', innerHTML: word.translations[x]}));
             let button = $(document.createElement('button'));

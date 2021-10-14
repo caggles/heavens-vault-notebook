@@ -35,8 +35,22 @@ $(document).ready(function(){
         $(".instructions").toggle(this.checked);
     });
 
+    // listener for each symbol button on the symbols page
+    $("button.ancient.symbol").click(function(){
+        $("div.detail-name").html($(this).text());
+        clear();
+        $("div.word-delete").hide();
+        $("div#vocabdetail").show();
+        $("div.detail-translations").hide();
+        $("td.containedby_close").hide();
+        $("td.contains_exact").hide();
+        $("td.contains_close").hide();
+        wordlist($(this).text(), "parent", "exact", "td.containedby_exact", "Words containing this letter...");
+
+    });
+
     // listener for clicking one of the ancient keys on the keyboard
-    $("button.ancient").click(function(){
+    $("button.ancient.keyboard").click(function(){
         let letter = $(this).text();
         $("#target").text($("#target").text() + letter);
         wordlist($("#target").text(), "child", "exact", "td.contains_exact", "Contains the exact words...");
@@ -58,15 +72,14 @@ $(document).ready(function(){
     // generates a listener for each ancient word in the vocab list, to allow the user to open more detailed information about said word
     $('div#vocablist, td.containedby_close, td.containedby_exact, td.contains_close, td.contains_exact').on('click', 'button', function(){
         let word = vocab.find((o) => { return o['name'] === this.textContent });
+        clear();
+        $("div#vocabdetail").show();
         wordlist(word.name, "child", "exact", "td.contains_exact", "Contains the exact words...");
         wordlist(word.name, "child", "close", "td.contains_close", "Contains the similar words...");
         wordlist(word.name, "parent", "exact", "td.containedby_exact", "Is contained within the exact words...");
         wordlist(word.name, "parent", "close", "td.containedby_close", "Is contained within the similar words...");
         basictranslations(word);
         detailtranslations(word);
-        $("div#addword").hide();
-        $("div#vocablist").hide();
-        $("div#vocabdetail").show();
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
     });
@@ -101,13 +114,7 @@ $(document).ready(function(){
 
     // listener for the clear button on the keyboard, to clear current ancient typing (and some other stuff)
     $("button#clear").click(function(){
-        $("#target").text("");
-        $("#translation").val("");
-        $("td.contains_exact").html("");
-        $("td.contains_close").html("");
-        $("td.containedby_exact").html("");
-        $("td.containedby_close").html("");
-        $("div.detail-translations").html("");
+        clear();
     });
 
     // listener for the "add word" button on the keyboard, to add the current word and translation to the vocabulary
@@ -122,13 +129,8 @@ $(document).ready(function(){
                 vocab[wordindex].translations.push($("#translation").val());
                 notify('A new translation for <span class="ancient">' + vocab[wordindex].name + '</span> has been added to your vocabulary.');
             }
-            $("#target").text("");
-            $("#translation").val("");
-            $("td.contains_exact").html("");
-            $("td.contains_close").html("");
-            $("td.containedby_exact").html("");
-            $("td.containedby_close").html("");
-            $("div.detail-translations").html("");
+            clear();
+            $("div#addword").show();
             cookiesave();
         } else {
             notify("Both the ancient word and translation need to have at least one character. Please try again.")
@@ -187,13 +189,20 @@ $(document).ready(function(){
     //                  FUNCTIONS                    //
     ///////////////////////////////////////////////////
 
-    // display the keyboard div and hide the others
-    function showkeyboard() {
-        $("div#addword").show();
+    // reset everything to the base visual appearance.
+    function clear() {
+        $("div#addword").hide();
         $("div#vocablist").hide();
         $("div#vocabdetail").hide();
         $("div#symbols").hide();
+        $("div.word-delete").show();
+        $("div.detail-translations").show();
+        $("td.containedby_exact").show();
+        $("td.containedby_close").show();
+        $("td.contains_exact").show();
+        $("td.contains_close").show();
         $("#target").text("");
+        $("#translation").val("");
         $("td.contains_exact").html("");
         $("td.contains_close").html("");
         $("td.containedby_exact").html("");
@@ -201,17 +210,16 @@ $(document).ready(function(){
         $("div.detail-translations").html("");
     }
 
+    // display the keyboard div and hide the others
+    function showkeyboard() {
+        clear();
+        $("div#addword").show();
+    }
+
     // display the vocab list div and hide the others
     function showvocablist() {
-        $("div#addword").hide();
-        $("div#vocabdetail").hide();
+        clear();
         $("div#vocablist").show();
-        $("div#symbols").hide();
-        $("td.contains_exact").html("");
-        $("td.contains_close").html("");
-        $("td.containedby_exact").html("");
-        $("td.containedby_close").html("");
-        $("div.detail-translations").html("");
         vocab.sort(function(a, b){
               if (a.translations[0] < b.translations[0]) {return -1;}
               if (a.translations[0] > b.translations[0]) {return 1;}
@@ -223,15 +231,8 @@ $(document).ready(function(){
 
     // display the symbols div and hide the others
     function showsymbols() {
-        $("div#addword").hide();
-        $("div#vocablist").hide();
-        $("div#vocabdetail").hide();
+        clear();
         $("div#symbols").show();
-        $("td.contains_exact").html("");
-        $("td.contains_close").html("");
-        $("td.containedby_exact").html("");
-        $("td.containedby_close").html("");
-        $("div.detail-translations").html("");
         for (let x in symbols) {
             $("input#" + symbols[x]['id']).val(symbols[x]['translation'])
         }

@@ -114,7 +114,7 @@ $(document).ready(function(){
 
     // listener for the clear button on the keyboard, to clear current ancient typing (and some other stuff)
     $("button#clear").click(function(){
-        clear();
+        showkeyboard();
     });
 
     // listener for the "add word" button on the keyboard, to add the current word and translation to the vocabulary
